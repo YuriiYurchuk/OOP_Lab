@@ -1,5 +1,5 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 class LibraryMember {
     private String id;
@@ -9,11 +9,11 @@ class LibraryMember {
     private String phoneNumber;
     private String address;
     private ArrayList<String> borrowedBooks;
-    private Date lastVisitDate;
+    private LocalDate lastVisitDate;
     private boolean overdueIncident;
 
     public LibraryMember(String id, String lastName, String firstName, String middleName, String phoneNumber, String address,
-                         ArrayList<String> borrowedBooks, Date lastVisitDate, boolean overdueIncident) {
+                         ArrayList<String> borrowedBooks, LocalDate lastVisitDate, boolean overdueIncident) {
         this.id = id;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -82,11 +82,11 @@ class LibraryMember {
         this.borrowedBooks = borrowedBooks;
     }
 
-    public Date getLastVisitDate() {
+    public LocalDate getLastVisitDate() {
         return lastVisitDate;
     }
 
-    public void setLastVisitDate(Date lastVisitDate) {
+    public void setLastVisitDate(LocalDate lastVisitDate) {
         this.lastVisitDate = lastVisitDate;
     }
 
@@ -129,14 +129,13 @@ public class Main {
         books3.add("Book5");
         ArrayList<String> books4 = new ArrayList<>();
         books4.add("Book6");
-        Date currentDate = new Date();
 
         // Creating objects
-        members[0] = new LibraryMember("1", "Tymoshchenko", "Ivan", "Ivanovich", "+380123456789", "St. Main 124", books1, currentDate, true);
-        members[1] = new LibraryMember("2", "Dyadchenko", "Ivanka", "Ivanivna", "+380987654321", "St. Volitsa 43", books2, currentDate, false);
-        members[2] = new LibraryMember("3", "Gordienko", "Dmytro", "Dmytrovych", "+380456789123", "St. Independence 10", books3, currentDate, false);
-        members[3] = new LibraryMember("4", "Belous", "Nina", "Ihorivna", "+380789123456", "St. Mountain 58", books4, currentDate, false);
-        members[4] = new LibraryMember("5", "Popov", "Mykhailo", "Mykhailovych", "+380321654987", "St. Lisova 12", new ArrayList<>(), currentDate, true);
+        members[0] = new LibraryMember("1", "Tymoshchenko", "Ivan", "Ivanovich", "+380123456789", "St. Main 124", books1, LocalDate.of(2022,12,1),true);
+        members[1] = new LibraryMember("2", "Dyadchenko", "Ivanka", "Ivanivna", "+380987654321", "St. Volitsa 43", books2, LocalDate.of(2024,2,27), false);
+        members[2] = new LibraryMember("3", "Gordienko", "Dmytro", "Dmytrovych", "+380456789123", "St. Independence 10", books3, LocalDate.of(2024,1,24), false);
+        members[3] = new LibraryMember("4", "Belous", "Nina", "Ihorivna", "+380789123456", "St. Mountain 58", books4, LocalDate.of(2021,1,1), false);
+        members[4] = new LibraryMember("5", "Popov", "Mykhailo", "Mykhailovych", "+380321654987", "St. Lisova 12", new ArrayList<>(), LocalDate.of(2024,2,12), true);
 
         // Output test data
         for (LibraryMember member : members) {
@@ -145,8 +144,8 @@ public class Main {
 
         // Example of using filtering methods
         filterByBorrowedBooks("Book1");
-        filterByLastVisitDate(currentDate);
         filterByOverdueIncidents(true);
+        filterByLastVisitDate();
     }
 
     public static void filterByBorrowedBooks(String bookName) {
@@ -158,15 +157,23 @@ public class Main {
         }
     }
 
-    public static void filterByLastVisitDate(Date date) {
-        System.out.println("Members who haven't visited since " + date + ":");
+    public static void filterByLastVisitDate() {
+        LocalDate currentDate = LocalDate.now();
+        System.out.println("Members who haven't visited for more than a year:");
+
+        // Отримання поточного року
+        int currentYear = currentDate.getYear();
+
+        // Порівняння дати останнього відвідування з поточним роком
         for (LibraryMember member : members) {
-            if (member.getLastVisitDate().compareTo(date) < 0) {
-                System.out.println(member);
+            if (member != null) { // Перевірка на null перед викликом методу
+                int lastVisitYear = member.getLastVisitDate().getYear();
+                if (currentYear - lastVisitYear > 1) {
+                    System.out.println(member);
+                }
             }
         }
     }
-
 
     public static void filterByOverdueIncidents(boolean hasOverdueIncidents) {
         String status = hasOverdueIncidents ? "have" : "don't have";
